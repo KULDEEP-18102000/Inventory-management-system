@@ -1,6 +1,7 @@
 const Inventory = require("../models/inventory");
 const Item = require("../models/item");
 
+//to get all inventories
 exports.getallInventories = async (req, res) => {
   try {
     const Inventories = await Inventory.find({});
@@ -11,6 +12,7 @@ exports.getallInventories = async (req, res) => {
   }
 };
 
+//to create inventory
 exports.createInventory = async (req, res) => {
   try {
     const InventoryName = req.body.inventoryName;
@@ -22,6 +24,7 @@ exports.createInventory = async (req, res) => {
   }
 };
 
+//to get particular inventory with Inventory Id given
 exports.showInventory = async (req, res) => {
   try {
     const inventoryId = req.params.InventoryId;
@@ -33,15 +36,12 @@ exports.showInventory = async (req, res) => {
   }
 };
 
+//to get particular item with Inventory Id and Item Id given
 exports.getItemOfInventory = async(req, res) => {
   try {
-    // GET /inventory/:id - Retrieve a single item from the inventory
     const inventoryId = req.params.InventoryId;
-    // console.log(inventoryId)
     const itemId = req.params.ItemId;
-    // console.log(itemId)
     const inventory = await Inventory.findById(inventoryId);
-    // console.log(inventory)
     let fetchedItem;
     inventory.items.forEach((item) => {
       if (item._id == itemId) {
@@ -55,12 +55,12 @@ exports.getItemOfInventory = async(req, res) => {
   }
 };
 
+//to add item in inventory with Inventory Id given
 exports.AddItemToInventory = async (req, res) => {
   try {
     const ItemName = req.body.ItemName;
     const InventoryId = req.params.InventoryId;
     const inventory = await Inventory.findOne({ _id: InventoryId });
-    // console.log(inventory)
     const item = await Item.create({ name: ItemName });
     inventory.items.push(item);
     await inventory.save();
@@ -71,7 +71,7 @@ exports.AddItemToInventory = async (req, res) => {
   }
 };
 
-// d. PUT /inventory/:id - Update an existing item in the inventory
+//to update item with Inventory Id and Item Id given
 exports.UpdateItemOfInventory = async (req, res) => {
   try {
     const newItemName = req.body.ItemName;
@@ -82,11 +82,9 @@ exports.UpdateItemOfInventory = async (req, res) => {
     
     fetchedItem.name = newItemName;
     fetchedItem.save();
-    // console.log(fetchedItem)
     const new_items=inventory.items.filter((item)=>{
         return item._id.toString()!=fetchedItem._id.toString()
     })
-    // console.log(new_items)
     new_items.push(fetchedItem)
     inventory.items=new_items
     inventory.save()
@@ -97,15 +95,12 @@ exports.UpdateItemOfInventory = async (req, res) => {
   }
 };
 
-// e. DELETE /inventory/:id - Remove an item from the inventory
+//to remove item with Inventory Id and Item Id given
 exports.RemoveItemOfInventory = async(req, res) => {
   try {
     const inventoryId = req.params.InventoryId;
-    console.log(inventoryId)
     const itemId = req.params.ItemId;
-    console.log(itemId)
     const inventory = await Inventory.findById(inventoryId);
-    console.log(inventory)
     let newItems=inventory.items.filter(item=>{
         return item._id.toString()!==itemId.toString()
     })

@@ -2,10 +2,9 @@ const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-exports.signUp = async (req, res, next) => {
-    // console.log(req.body)
+//for signing up the user
+exports.signUp = async (req, res) => {
     try {
-        console.log("came to signup")
         const name = req.body.name
         const email = req.body.email
         const password = req.body.password
@@ -25,11 +24,13 @@ exports.signUp = async (req, res, next) => {
     }
 }
 
+//to generate token 
 function generateAccessToken(id, name) {
     return jwt.sign({ userId: id, name: name }, "bobyiskuldeep")
 }
 
-exports.login = async (req, res, next) => {
+//for logging in the user
+exports.login = async (req, res) => {
     try {
         const email = req.body.email
         const password = req.body.password
@@ -45,8 +46,6 @@ exports.login = async (req, res, next) => {
                 }
                 if (result === true) {
                     res.status(200).json({ success: true, message: "user login successfull", authtoken: generateAccessToken(user.id, user.name) })
-                    // res.redirect('/expense')
-                    // res.sendFile(path.join(__dirname,'../../Frontend/expense.html'))
                 } else {
                     res.status(400).json({ success: false, message: "incorrect password" })
                 }
